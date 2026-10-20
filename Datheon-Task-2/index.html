@@ -1,0 +1,338 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Plan your tasks, track your time, and monitor your progress with a personal productivity planner.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#fff9ee">
+    <title>TaskFlow | Plan &amp; Progress</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    
+</head>
+<body>
+    <div class="app-shell">
+        <!-- Button to open the sidebar -->
+<button
+    class="menu-toggle"
+    id="menuToggle"
+    aria-label="Open navigation"
+    aria-controls="sidebar"
+    aria-expanded="false"
+>
+    ☰
+</button>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+            <div class="sidebar-header"></div>
+             <div class="sidebar-content">
+            <!--<a href="#" class="brand" aria-label="Little Things home">
+                <span class="brand-flower">✿</span>
+                <span>little things<span class="brand-dot">.</span></span>
+            </a>
+             <div class="profile-card">
+                <div class="profile-avatar">♡</div>
+                <div>
+                    <p class="profile-name">Your little corner</p>
+                    <p class="profile-caption">One thing at a time.</p>
+                </div>
+            </div>-->
+            
+<nav class="sidebar-nav" aria-label="Main navigation">
+
+    <p class="nav-label">YOUR SPACE</p>
+
+    <button class="nav-item" data-view="all">
+        <span class="nav-icon">▤</span>
+        <span>All tasks</span>
+        <span class="nav-count" id="allCount">0</span>
+    </button>
+    <hr class="nav-separator">
+    <!-- Categories nested under All Tasks -->
+    <div class="category-list">
+        <button class="nav-item category-nav" data-category="Work">
+            <span class="category-icon work-icon">💼</span>
+            <span>Work</span>
+        </button>
+
+        <button class="nav-item category-nav" data-category="Study">
+            <span class="category-icon study-icon">📚</span>
+            <span>Study</span>
+        </button>
+
+        <button class="nav-item category-nav" data-category="Personal">
+            <span class="category-icon personal-icon">🌷</span>
+            <span>Personal</span>
+        </button>
+
+        <button class="nav-item" data-view="someday">
+            <span class="nav-icon someday-icon">☁️</span>
+            <span>Someday</span>
+        </button>
+    </div>
+    <hr class="nav-separator">
+    <button class="nav-item" data-view="upcoming">
+        <span class="nav-icon">▦</span>
+        <span>Upcoming deadlines</span>
+    </button>
+
+    <button class="nav-item" data-view="important">
+        <span class="nav-icon">☆</span>
+        <span>Important</span>
+    </button>
+
+    <button class="nav-item" data-view="completed">
+        <span class="nav-icon">✓</span>
+        <span>Completed</span>
+    </button>
+
+    <button class="nav-item" data-view="archive">
+        <span class="nav-icon">▧</span>
+        <span>Archive</span>
+    </button>
+
+</nav>
+
+            <!--<div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <span class="note-sparkle">✧</span>
+                    <p>Progress isn't always loud. Sometimes it's just showing up.</p>
+                </div>
+                  <button class="nav-item" id="settingsButton">
+                    <span class="nav-icon">⚙</span>
+                    <span>Settings</span>
+                </button>
+            </div>-->
+            </div>
+        </aside>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
+        
+<main class="main-content">
+
+<!-- Time-based image tile -->
+
+
+    <!-- TaskFlow cover -->
+    <section class="taskflow-cover" aria-labelledby="taskflow-title">
+
+        <div class="cover-text">
+            <h1 id="taskflow-title">TaskFlow</h1>
+            <p><span class="brand-flower">✿</span>
+            Clock it
+            <span class="brand-flower">✿</span></p>
+        </div>
+
+        <img
+            src="images/vintage-clock.png"
+            alt=""
+            class="cover-clock"
+            aria-hidden="true"
+        >
+
+    </section>
+
+    <!-- Your dashboard content goes below this line -->
+    
+<!-- MAIN DASHBOARD -->
+ <!--<section class="time-image-tile" aria-label="Time of day">
+    <img
+        id="timeOfDayImage"
+        src="images/morning.jpeg"
+        alt=""
+    >
+</section>-->
+<section class="editorial-dashboard" id="dashboard">
+
+    <!-- Welcome -->
+    <header class="welcome-section">
+        <div>
+           <!-- <p class="eyebrow">YOUR PERSONAL PLANNER</p>-->
+            <h2 id="welcomeGreeting">Good evening</h2>
+            <!--<p class="welcome-note">A little progress is still progress.</p>-->
+        </div>
+
+        <div class="date-note">
+            <span class="date-label">TODAY'S DATE</span>
+            <time id="todayDate"></time>
+        </div>
+    </header>
+
+<!-- Welcome -->
+
+
+<!-- Today's tasks -->
+<section class="today-grid">
+    <div class="today-count">
+        <p>You have <span id="todayTaskCount">0</span> tasks today</p>
+    </div>
+
+    <div class="up-next">
+        <h3>Up next</h3>
+        <div id="upNextTasks">
+            <p>No tasks yet</p>
+        </div>
+    </div>
+</section>
+
+<!-- New Task -->
+<section class="new-task-card">
+    <form id="newTaskForm">
+        <div class="task-input-row">
+            <label for="taskFile" class="icon-button" title="Attach files">
+             <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+            d="m21.4 11.1-8.5 8.5a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        />
+    </svg>
+            </label>
+            <input type="file" id="taskFile" multiple hidden>
+
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="New Task"
+                required
+            >
+
+            <button type="submit" class="send-button"
+                    aria-label="Add task" title="Add task">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M22 2 15 22l-4-9-9-4 20-7ZM22 2 11 13"
+                          fill="none" stroke="currentColor"
+                          stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="task-options">
+            <select id="taskCategory" aria-label="Category">
+                <option value="Work">Work</option>
+                <option value="Study">Study</option>
+                <option value="Personal">Personal</option>
+              
+                <option value="Other">Someday</option>
+            </select>
+
+            <select id="taskPriority" aria-label="Priority">
+                <option value="Medium">Medium priority</option>
+                <option value="High">High priority</option>
+                <option value="Low">Low priority</option>
+            </select>
+
+            <input type="date" id="taskDueDate"
+                   aria-label="Due date">
+        </div>
+    </form>
+
+    <p id="selectedFiles" class="selected-files"></p>
+</section>
+
+<!-- Tasks created here -->
+<section id="taskList" class="task-list"></section>
+
+    <!-- Progress overview -->
+  
+
+    <!-- Task planner and deadlines -->
+    <div class="planner-layout">
+
+        <section class="task-panel" id="taskManager">
+           
+
+            <form id="taskForm" class="task-form">
+                <label for="taskTitle">What would you like to do?</label>
+                <input
+                    type="text"
+                    id="taskTitle"
+                    placeholder="Write your next little goal..."
+                    maxlength="120"
+                    required
+                >
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="taskCategory">Category</label>
+                        <select id="taskCategory">
+                            <option value="Study">Study</option>
+                            <option value="Work">Work</option>
+                            <option value="Personal">Personal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="taskPriority">Priority</label>
+                        <select id="taskPriority">
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="taskDueDate">Due date</label>
+                    <input type="date" id="taskDueDate">
+                </div>
+
+                <button type="submit" class="add-task-button">
+                    <span aria-hidden="true">+</span> Add to my journal
+                </button>
+            </form>
+
+            <div class="task-toolbar">
+                <div class="filter-tabs" aria-label="Filter tasks">
+                    <button type="button" class="filter-button active"
+                        data-filter="All" aria-pressed="true">All</button>
+                    <button type="button" class="filter-button"
+                        data-filter="Study" aria-pressed="false">Study</button>
+                    <button type="button" class="filter-button"
+                        data-filter="Work" aria-pressed="false">Work</button>
+                    <button type="button" class="filter-button"
+                        data-filter="Personal" aria-pressed="false">Personal</button>
+                </div>
+
+                <input
+                    type="search"
+                    id="taskSearch"
+                    class="task-search"
+                    placeholder="Find a task..."
+                    aria-label="Search tasks"
+                >
+            </div>
+
+            <div id="taskList" class="task-list" aria-live="polite">
+                <p class="empty-state">Your journal is waiting for its first task.</p>
+            </div>
+        </section>
+
+        <aside class="deadline-panel">
+            <p class="eyebrow">KEEP AN EYE ON</p>
+            <h3>Coming up</h3>
+            <p class="deadline-intro">Your next few deadlines, all in one place.</p>
+
+            <div id="deadlineList" class="deadline-list" aria-live="polite">
+                <p class="empty-state">Your upcoming deadlines will appear here.</p>
+            </div>
+
+            <div class="deadline-footer">
+                <span aria-hidden="true">✧</span>
+                Make time for what matters.
+            </div>
+        </aside>
+
+    </div>
+</section>
+
+</main>
+</div>
+</body>
+</html> 

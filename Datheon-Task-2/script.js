@@ -482,3 +482,42 @@ if (moodSelect) {
 }
 // Initial update
 updateMyDayGrid();
+const dateFilterButtons = document.querySelectorAll(".date-filter");
+const customDateInput = document.getElementById("customTaskDate");
+
+dateFilterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+
+        if (filter === "custom") {
+            customDateInput?.showPicker?.();
+            customDateInput?.focus();
+            return;
+        }
+
+        if (dateTaskFilter) {
+            dateTaskFilter.value = filter;
+            dateTaskFilter.dispatchEvent(new Event("change"));
+        }
+
+        dateFilterButtons.forEach(item =>
+            item.classList.toggle("active", item === button)
+        );
+    });
+});
+
+customDateInput?.addEventListener("change", () => {
+    if (!customDateInput.value) return;
+
+    if (dateTaskFilter) {
+        dateTaskFilter.value = "custom";
+        dateTaskFilter.dispatchEvent(new Event("change"));
+    }
+
+    dateFilterButtons.forEach(button =>
+        button.classList.toggle(
+            "active",
+            button.dataset.filter === "custom"
+        )
+    );
+});

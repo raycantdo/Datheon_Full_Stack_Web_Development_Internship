@@ -226,6 +226,7 @@
                     </div>
                     <!-- Progress overview -->
                     <div class="my-day-row">
+                        <div class="my-day-focus-column">
                         <section class="my-day-grid">
 
                             <div class="my-day-info">
@@ -269,11 +270,52 @@
                             </div>
 
                         </section>
+                        <article class="feature-card focus-card">
+                            <p class="eyebrow">MAKE SPACE TO FOCUS</p>
+
+
+                            <label for="focusTask">Working on</label>
+                            <select id="focusTask">
+                                <option value="">Choose a task</option>
+                            </select>
+
+                            <div class="focus-clock">
+                                <button type="button" id="focusMinus" aria-label="Decrease focus time">−</button>
+                                <div>
+                                    <strong id="focusTime">30:00</strong>
+                                    <small>minutes of focus</small>
+                                </div>
+                                <button type="button" id="focusPlus" aria-label="Increase focus time">+</button>
+                            </div>
+
+                            <div class="focus-actions">
+                                <button type="button" id="focusStart">▶ Start</button>
+                                <button type="button" id="focusReset">Reset</button>
+                            </div>
+
+                            
+                            <p id="focusMessage" role="status"></p>
+                        </article>
+                        </div>
                         <section class="task-panel" id="taskManager">
 
 
 
+                            <div class="task-date-filters">
+                                <button type="button" class="date-filter active" data-filter="today">
+                                    Today
+                                </button>
+                                <button type="button" class="date-filter" data-filter="tomorrow">
+                                    Tomorrow
+                                </button>
+                                <button type="button" class="date-filter" data-filter="week">
+                                    This week
+                                </button>
+                                <button type="button" class="date-filter custom-filter" data-filter="custom">
 
+                                    <input type="date" id="customTaskDate" aria-label="Choose custom date">
+                                </button>
+                            </div>
 
                             <div class="task-toolbar">
                                 <div class="filter-tabs" aria-label="Filter tasks">
@@ -297,7 +339,7 @@
                         </section>
                     </div>
                 </div>
-
+             
                 <!-- Task planner and deadlines -->
                 <div class="planner-layout">
                     <div class="planner-layout" id="upcomingView" hidden>

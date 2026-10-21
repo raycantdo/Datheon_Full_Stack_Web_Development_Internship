@@ -367,6 +367,75 @@
 
         </main>
     </div>
+    <!-- Task details / edit dialog -->
+<dialog id="taskDetailsDialog" class="task-dialog">
+    <form id="taskDetailsForm">
+        <div class="dialog-heading">
+            <div>
+                <p class="eyebrow">YOUR TASK</p>
+                <h2 id="taskDialogHeading">Task details</h2>
+            </div>
+            <button type="button" id="closeTaskDialog"
+                    class="dialog-close" aria-label="Close">×</button>
+        </div>
+
+        <label for="detailTitle">Title</label>
+        <input id="detailTitle" required>
+
+        <div class="dialog-two-columns">
+            <div>
+                <label for="detailCategory">Category</label>
+                <select id="detailCategory">
+                    <option>Work</option>
+                    <option>Study</option>
+                    <option>Personal</option>
+                    <option>Other</option>
+                </select>
+            </div>
+            <div>
+                <label for="detailDeadline">Deadline</label>
+                <input type="date" id="detailDeadline">
+            </div>
+        </div>
+
+        <label for="detailNotes">Notes</label>
+        <textarea id="detailNotes" rows="3"
+                  placeholder="Add details or a plan..."></textarea>
+
+        <label for="detailSubtasks">Subtasks (one per line)</label>
+        <textarea id="detailSubtasks" rows="3"
+                  placeholder="Read chapter 1&#10;Make summary notes"></textarea>
+
+        <label for="detailLinks">Links (one per line)</label>
+        <textarea id="detailLinks" rows="2"
+                  placeholder="https://example.com"></textarea>
+
+        <label for="detailImages">Pictures for this task</label>
+        <input type="file" id="detailImages" accept="image/*" multiple>
+        <div id="taskDetailImages" class="task-detail-images"></div>
+
+        <div class="dialog-actions">
+            <button type="button" id="cancelTaskDialog"
+                    class="utility-button">Cancel</button>
+            <button type="submit" class="primary-button">Save task</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Task completion notification -->
+<div id="completionToast" class="completion-toast"
+     role="status" aria-live="polite" hidden>
+    <span class="completion-check">✓</span>
+    <div>
+        <strong>Well done!</strong>
+        <p>You have completed your task.</p>
+        <button type="button" id="viewCompletedTask">
+            View details ↗
+        </button>
+    </div>
+    <button type="button" id="closeCompletionToast"
+            aria-label="Close notification">×</button>
+</div>
 </body>
 
 </html>

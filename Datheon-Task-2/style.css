@@ -2062,3 +2062,35 @@ body[data-theme="dark"] .primary-button {
     }
 }
 
+/* Search Tasks cards only */
+#filteredTaskList .search-task-item {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+}
+
+#filteredTaskList .search-task-item .task-details {
+    width: 100%;
+    min-width: 0;
+}
+
+#filteredTaskList .search-task-item .task-name {
+    margin: 0 0 8px;
+    text-align: left;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+#filteredTaskList .search-task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+#filteredTaskList .search-task-meta span {
+    overflow-wrap: anywhere;
+}

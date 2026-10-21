@@ -103,6 +103,15 @@ function initTaskFlow() {
     const upNextTasks = document.getElementById("upNextTasks");
      const taskSearch = document.getElementById("taskSearch");
     const filterButtons = [...document.querySelectorAll(".filter-button")];
+    
+    const dateFilterButtons = [...document.querySelectorAll(".date-filter")];
+dateFilterButtons.forEach(button => {
+    button.classList.toggle("active", button.dataset.filter === "");
+});
+    const customDateInput = document.getElementById("customTaskDate");
+
+let activeDateFilter = "";
+let activeCategoryFilter = "All";
     const moodSelect = document.getElementById("moodSelect");
     const upcomingView = document.getElementById("upcomingView");
 const deadlineList = document.getElementById("deadlineList");
@@ -297,8 +306,150 @@ const sidebarLinks = document.querySelectorAll(
             item.append(checkbox, details, deleteButton);
             mainTaskList.append(item);
         });
+
     }
     
+function renderFilteredTasks() {
+    if (!filteredTaskList) return;
+
+    const query = (taskSearch?.value || "").toLowerCase().trim();
+    const selectedDate = customDateInput?.value;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const todayString = formatDate(today);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowString = formatDate(tomorrow);
+
+    const weekStart = new Date(today);
+    const day = weekStart.getDay();
+    weekStart.setDate(weekStart.getDate() - (day === 0 ? 6 : day - 1));
+
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+
+    const filteredTasks = tasks.filter(task => {
+        if (activeDateFilter === "today" && task.dueDate !== todayString) {
+            return false;
+        }
+
+        if (activeDateFilter === "tomorrow" && task.dueDate !== tomorrowString) {
+            return false;
+        }
+
+        if (activeDateFilter === "week") {
+            if (!task.dueDate) return false;
+
+            const dueDate = new Date(task.dueDate + "T00:00:00");
+            if (dueDate < weekStart || dueDate > weekEnd) return false;
+        }
+
+        if (activeDateFilter === "custom" && selectedDate && task.dueDate !== selectedDate) {
+            return false;
+        }
+
+        if (
+            activeCategoryFilter !== "All" &&
+            task.category !== activeCategoryFilter
+        ) {
+            return false;
+        }
+
+        const searchableText =
+            `${task.title} ${task.category} ${task.priority} ${task.dueDate || ""}`
+                .toLowerCase();
+
+        return searchableText.includes(query);
+    });
+
+    filteredTaskList.replaceChildren();
+
+    if (filteredTasks.length === 0) {
+        filteredTaskList.textContent = "No matching tasks found.";
+        return;
+    }
+
+    filteredTasks.forEach(task => {
+        const card = document.createElement("div");
+        card.className = "task-item search-task-item";
+
+        const details = document.createElement("div");
+        details.className = "task-details";
+
+        const title = document.createElement("h4");
+        title.className = "task-name";
+        title.textContent = task.title;
+
+        const meta = document.createElement("div");
+        meta.className = "search-task-meta";
+
+        const category = document.createElement("span");
+        category.textContent = task.category;
+
+        const deadline = document.createElement("span");
+        deadline.textContent = task.dueDate
+            ? `Deadline: ${task.dueDate}`
+            : "No deadline";
+
+        const priority = document.createElement("span");
+        priority.textContent = `Priority: ${task.priority}`;
+
+        meta.append(category, deadline, priority);
+        details.append(title, meta);
+        card.append(details);
+        filteredTaskList.append(card);
+    });
+}
+
+dateFilterButtons.forEach(button => {
+    button.addEventListener("click", event => {
+        activeDateFilter = button.dataset.filter;
+
+        dateFilterButtons.forEach(item => {
+            item.classList.toggle("active", item === button);
+        });
+
+        if (activeDateFilter === "custom" &&
+            event.target !== customDateInput) {
+            customDateInput?.showPicker?.();
+        }
+
+        renderFilteredTasks();
+    });
+});
+
+customDateInput?.addEventListener("change", () => {
+    activeDateFilter = "custom";
+
+    dateFilterButtons.forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.filter === "custom"
+        );
+    });
+
+    renderFilteredTasks();
+});
+
+filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        activeCategoryFilter = button.dataset.filter;
+
+        filterButtons.forEach(item => {
+            const selected = item === button;
+            item.classList.toggle("active", selected);
+            item.setAttribute("aria-pressed", String(selected));
+        });
+
+        renderFilteredTasks();
+    });
+});
+
+taskSearch?.addEventListener("input", renderFilteredTasks);
+
 function renderDeadlines() {
     if (!deadlineList) return;
 
@@ -350,6 +501,7 @@ function showUpcomingDeadlines() {
 
     function renderAll() {
          renderTasks();
+          renderFilteredTasks();
     renderTodaySummary();
     renderDeadlines();
     updateMyDayGrid();
@@ -482,42 +634,6 @@ if (moodSelect) {
 }
 // Initial update
 updateMyDayGrid();
-const dateFilterButtons = document.querySelectorAll(".date-filter");
+
 const customDateInput = document.getElementById("customTaskDate");
 
-dateFilterButtons.forEach(button => {
-    button.addEventListener("click", () => {
-        const filter = button.dataset.filter;
-
-        if (filter === "custom") {
-            customDateInput?.showPicker?.();
-            customDateInput?.focus();
-            return;
-        }
-
-        if (dateTaskFilter) {
-            dateTaskFilter.value = filter;
-            dateTaskFilter.dispatchEvent(new Event("change"));
-        }
-
-        dateFilterButtons.forEach(item =>
-            item.classList.toggle("active", item === button)
-        );
-    });
-});
-
-customDateInput?.addEventListener("change", () => {
-    if (!customDateInput.value) return;
-
-    if (dateTaskFilter) {
-        dateTaskFilter.value = "custom";
-        dateTaskFilter.dispatchEvent(new Event("change"));
-    }
-
-    dateFilterButtons.forEach(button =>
-        button.classList.toggle(
-            "active",
-            button.dataset.filter === "custom"
-        )
-    );
-});

@@ -96,11 +96,22 @@ function initTaskFlow() {
     const taskFile = document.getElementById("taskFile");
     const selectedFiles = document.getElementById("selectedFiles");
 
-    const taskList = document.getElementById("taskList");
+    const mainTaskList = document.getElementById("taskList");
+    const filteredTaskList = document.getElementById("filteredTaskList");
+    
     const todayTaskCount = document.getElementById("todayTaskCount");
     const upNextTasks = document.getElementById("upNextTasks");
-
-    if (!taskForm || !taskInput || !taskList) return;
+     const taskSearch = document.getElementById("taskSearch");
+    const filterButtons = [...document.querySelectorAll(".filter-button")];
+    const moodSelect = document.getElementById("moodSelect");
+    const upcomingView = document.getElementById("upcomingView");
+const deadlineList = document.getElementById("deadlineList");
+const dashboardColumns = document.querySelector(".dashboard-columns");
+const welcomeSection = document.querySelector(".welcome-section");
+const sidebarLinks = document.querySelectorAll(
+    "#sidebar [data-view], #sidebar [data-category]"
+);
+    if (!taskForm || !taskInput || !mainTaskList) return;
 
     const storageKey = "taskflowTasks";
     let tasks = [];
@@ -125,7 +136,9 @@ function initTaskFlow() {
             ? task.priority
             : "Medium",
         dueDate: task.dueDate || "",
-        completed: Boolean(task.completed)
+        completed: Boolean(task.completed),
+        archived: Boolean(task.archived),
+        started: Boolean(task.started)
     }));
 
     function saveTasks() {
@@ -228,10 +241,10 @@ function initTaskFlow() {
     }
 
     function renderTasks() {
-        taskList.replaceChildren();
+        mainTaskList.replaceChildren();
 
         if (tasks.length === 0) {
-            taskList.append(
+            mainTaskList.append(
                 createElement("p", "empty-state", "Your first task starts here.")
             );
             return;
@@ -282,13 +295,65 @@ function initTaskFlow() {
             });
 
             item.append(checkbox, details, deleteButton);
-            taskList.append(item);
+            mainTaskList.append(item);
         });
     }
+    
+function renderDeadlines() {
+    if (!deadlineList) return;
+
+    deadlineList.replaceChildren();
+
+    const upcomingTasks = [...tasks]
+        .filter(task => !task.completed && !task.archived && task.dueDate)
+        .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+    if (upcomingTasks.length === 0) {
+        deadlineList.append(
+            createElement("p", "empty-state", "No upcoming deadlines.")
+        );
+        return;
+    }
+
+    upcomingTasks.forEach(task => {
+        const item = createElement("div", "deadline-item");
+        const title = createElement("p", "deadline-task-title", task.title);
+        const date = createElement(
+            "small",
+            "deadline-task-date",
+            formatDate(task.dueDate)
+        );
+
+        item.append(title, date);
+        deadlineList.append(item);
+    });
+}
+
+function showUpcomingDeadlines() {
+    if (dashboardColumns) dashboardColumns.hidden = true;
+    if (welcomeSection) welcomeSection.hidden = true;
+    if (upcomingView) upcomingView.hidden = false;
+
+    sidebarLinks.forEach(link => {
+        const selected = link.dataset.view === "upcoming";
+        link.classList.toggle("active", selected);
+
+        if (selected) {
+            link.setAttribute("aria-current", "page");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+    });
+
+    renderDeadlines();
+}
 
     function renderAll() {
-        renderTasks();
-        renderTodaySummary();
+         renderTasks();
+    renderTodaySummary();
+    renderDeadlines();
+    updateMyDayGrid();
+       
     }
 
     taskForm.addEventListener("submit", event => {
@@ -327,7 +392,17 @@ function initTaskFlow() {
             .map(file => file.name)
             .join(", ");
     });
+sidebarLinks.forEach(link => {
+    link.addEventListener("click", event => {
+        if (link.dataset.view === "upcoming") {
+            event.preventDefault();
+            showUpcomingDeadlines();
+            closeSidebar();
+        }
+    });
+});
 
+if (upcomingView) upcomingView.hidden = true;
     renderAll();
 }
 
@@ -336,3 +411,74 @@ if (document.readyState === "loading") {
 } else {
     initTaskFlow();
 }
+
+/* ===== My Day Grid ===== */
+
+function updateMyDayGrid() {
+    const savedTasks = JSON.parse(
+        localStorage.getItem("taskflowTasks") || "[]"
+    );
+
+    const total = savedTasks.length;
+
+    const done = savedTasks.filter(task =>
+        task.completed === true
+    ).length;
+
+    const active = savedTasks.filter(task =>
+        !task.completed &&
+        (task.status === "active" || task.started === true)
+    ).length;
+
+    const notStarted = total - done - active;
+
+    const percentage = total > 0
+        ? Math.round((done / total) * 100)
+        : 0;
+
+    // Update circular progress
+    const circle = document.querySelector(".progress-circle");
+    const percentageText = document.getElementById("myDayPercentage");
+
+    if (circle) {
+        circle.style.setProperty("--progress", `${percentage}%`);
+    }
+
+    if (percentageText) {
+        percentageText.textContent = `${percentage}%`;
+    }
+
+    // Update remaining tasks
+    const remainingText = document.querySelector(".my-day-progress > p");
+
+    if (remainingText) {
+        const remaining = total - done;
+        remainingText.textContent = remaining === 0
+            ? "All tasks completed!"
+            : `${remaining} more to complete`;
+    }
+
+    // Update status counts
+    const doneCount = document.querySelector(".status-box.done strong");
+    const activeCount = document.querySelector(".status-box.active strong");
+    const notStartedCount = document.querySelector(
+        ".status-box.not-started strong"
+    );
+
+    if (doneCount) doneCount.textContent = done;
+    if (activeCount) activeCount.textContent = active;
+    if (notStartedCount) notStartedCount.textContent = notStarted;
+}
+
+// Restore and save the selected mood
+const moodSelect = document.getElementById("moodSelect");
+
+if (moodSelect) {
+    moodSelect.value = localStorage.getItem("taskflowMood") || "";
+
+    moodSelect.addEventListener("change", () => {
+        localStorage.setItem("taskflowMood", moodSelect.value);
+    });
+}
+// Initial update
+updateMyDayGrid();

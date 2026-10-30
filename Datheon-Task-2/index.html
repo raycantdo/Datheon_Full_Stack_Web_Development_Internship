@@ -10,7 +10,9 @@
     <title>TaskFlow | Plan &amp; Progress</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
     <script src="script.js" defer></script>
+    <script src="smart-suggestions.js" defer></script>
 
 </head>
 
@@ -42,12 +44,36 @@
 
                     <p class="nav-label">YOUR SPACE</p>
 
+
                     <button class="nav-item" data-view="all">
                         <span class="nav-icon">▤</span>
                         <span>All tasks</span>
                         <span class="nav-count" id="allCount">0</span>
                     </button>
+
+                    <button class="nav-item" data-view="today">
+                        <span class="nav-icon">☀</span>
+                        <span>Today</span>
+                    </button>
+
+                    <button class="nav-item" data-view="tomorrow">
+                        <span class="nav-icon">🌅</span>
+
+                        <span>Tomorrow</span>
+                    </button>
+
+                    <button class="nav-item" data-view="thisWeek">
+                        <span class="nav-icon">📅</span>
+                        <span>This week</span>
+                    </button>
+
+                    <button class="nav-item" data-view="thisMonth">
+                        <span class="nav-icon">🗓</span>
+                        <span>This month</span>
+                    </button>
+
                     <hr class="nav-separator">
+
                     <!-- Categories nested under All Tasks -->
                     <div class="category-list">
                         <button class="nav-item category-nav" data-category="Work">
@@ -72,18 +98,21 @@
                     </div>
                     <hr class="nav-separator">
                     <button class="nav-item" data-view="upcoming">
-                        <span class="nav-icon">▦</span>
+                        <span class="nav-icon">⏳</span>
                         <span>Upcoming deadlines</span>
                     </button>
 
-                    <button class="nav-item" data-view="important">
-                        <span class="nav-icon">☆</span>
-                        <span>Important</span>
-                    </button>
+
+                   
+
 
                     <button class="nav-item" data-view="completed">
                         <span class="nav-icon">✓</span>
                         <span>Completed</span>
+                    </button>
+                    <button class="nav-item" data-view="active">
+                        <span class="nav-icon">①</span>
+                        <span>Active</span>
                     </button>
 
                     <button class="nav-item" data-view="archive">
@@ -208,11 +237,14 @@
                                         <option value="Other">Someday</option>
                                     </select>
 
-                                    <select id="taskPriority" aria-label="Priority">
-                                        <option value="Medium">Medium </option>
-                                        <option value="High">High priority</option>
-                                        <option value="Low">Low priority</option>
-                                    </select>
+
+                                    <div class="priority-field">
+
+                                        <input type="number" id="taskPriority" aria-label="Priority" min="1" step="1"
+                                            value="1" required>
+
+                                    </div>
+
 
                                     <input type="date" id="taskDueDate" aria-label="Due date">
                                 </div>
@@ -222,81 +254,104 @@
                         </section>
 
                         <!-- Tasks created here -->
+                         <h2 id="taskListHeading" class="task-list-heading">Today's Tasks</h2>
+                         <p id="taskEmptyMessage" class="task-empty-message" hidden></p>
                         <section id="taskList" class="task-list"></section>
+                        <div id="upcomingView" hidden>
+
+
+
+                            <aside class="deadline-panel">
+                                <p cl ass="eyebrow">KEEP AN EYE ON</p>
+                                <h3>Coming up</h3>
+                                <p class="deadline-intro">Your next few deadlines, all in one place.</p>
+
+                                <div id="deadlineList" class="deadline-list" aria-live="polite">
+                                    <p class="empty-state">Your upcoming deadlines will appear here.</p>
+                                </div>
+
+                                <div class="deadline-footer">
+                                    <span aria-hidden="true">✧</span>
+                                    Make time for what matters.
+                                </div>
+                            </aside>
+
+                        </div>
                     </div>
                     <!-- Progress overview -->
                     <div class="my-day-row">
                         <div class="my-day-focus-column">
-                        <section class="my-day-grid">
+                            <section class="my-day-grid">
 
-                            <div class="my-day-info">
-                                <h2>My Day</h2>
+                                <div class="my-day-info">
+                                    <h2>My Day</h2>
 
-                                <div class="mood-section">
-                                    <label for="moodSelect">Mood:</label>
-                                    <select id="moodSelect">
+                                    <div class="mood-section">
+                                        <label for="moodSelect">Mood:</label>
+                                        <select id="moodSelect">
 
-                                        <option value="">Regular</option>
-                                        <option value="Energetic">Energetic</option>
-                                        <option value="Idle">Idle</option>
-                                        <option value="Sleepy">Sleepy</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="my-day-progress">
-                                <div class="progress-circle">
-                                    <span id="myDayPercentage">25%</span>
-                                    <small>complete</small>
-                                </div>
-                                <p>4 more to complete</p>
-                            </div>
-
-                            <div class="my-day-status">
-                                <div class="status-box done">
-                                    <strong>1</strong>
-                                    <span>Done</span>
+                                            <option value="">Regular</option>
+                                            <option value="Energetic">Energetic</option>
+                                            <option value="Idle">Idle</option>
+                                            <option value="Sleepy">Sleepy</option>
+                                        </select>
+                                    </div>
                                 </div>
 
-                                <div class="status-box active">
-                                    <strong>2</strong>
-                                    <span>Active</span>
+                                <div class="my-day-progress">
+                                    <div class="progress-circle">
+                                        <span id="myDayPercentage">25%</span>
+                                        <small>complete</small>
+                                    </div>
+                                    <p>4 more to complete</p>
                                 </div>
 
-                                <div class="status-box not-started">
-                                    <strong>1</strong>
-                                    <span>Didn't start</span>
+                                <div class="my-day-status">
+                                    <div class="status-box done">
+                                        <strong>1</strong>
+                                        <span>Done</span>
+                                    </div>
+
+                                    <div class="status-box active">
+                                        <strong>2</strong>
+                                        <span>Active</span>
+                                    </div>
+
+                                    <div class="status-box not-started">
+                                        <strong>1</strong>
+                                        <span>Didn't start</span>
+                                    </div>
                                 </div>
-                            </div>
 
-                        </section>
-                        <article class="feature-card focus-card">
-                            <p class="eyebrow">MAKE SPACE TO FOCUS</p>
+                            </section>
+                            <article class="feature-card focus-card">
+                                <p class="eyebrow">MAKE SPACE TO FOCUS</p>
 
 
-                            <label for="focusTask">Working on</label>
-                            <select id="focusTask">
-                                <option value="">Choose a task</option>
-                            </select>
+                                <label for="focusTask">Working on</label>
+                                <select id="focusTask">
+                                    <option value="">Choose a task</option>
+                                </select>
 
-                            <div class="focus-clock">
-                                <button type="button" id="focusMinus" aria-label="Decrease focus time">−</button>
-                                <div>
-                                    <strong id="focusTime">30:00</strong>
-                                    <small>minutes of focus</small>
+                                <div class="focus-clock">
+                                    <button type="button" id="focusMinus" aria-label="Decrease focus time">−</button>
+                                    <div>
+                                        <strong id="focusTime">30:00</strong>
+                                        <small>minutes of focus</small>
+                                    </div>
+                                    <button type="button" id="focusPlus" aria-label="Increase focus time">+</button>
                                 </div>
-                                <button type="button" id="focusPlus" aria-label="Increase focus time">+</button>
-                            </div>
 
-                            <div class="focus-actions">
-                                <button type="button" id="focusStart">▶ Start</button>
-                                <button type="button" id="focusReset">Reset</button>
-                            </div>
+                                <div class="focus-actions">
+                                    <button type="button" id="focusStart">▶ Start</button>
+                                    <button type="button" id="focusReset">Reset</button>
+                                </div>
 
-                            
-                            <p id="focusMessage" role="status"></p>
-                        </article>
+
+                                <p id="focusMessage" role="status"></p>
+                            </article>
                         </div>
+                        <div class="find-task-column">
                         <section class="task-panel" id="taskManager">
 
 
@@ -337,105 +392,165 @@
                                 <p class="empty-state">Your journal is waiting for its first task.</p>
                             </div>
                         </section>
+                        
+<!-- Smart Task Suggestions -->
+<section class="smart-suggestions" id="smartSuggestions">
+    <div class="suggestion-heading">
+        <div>
+            <h2>A little nudge for today</h2>
+             <h5>Not sure what to do?</h5>
+            <p>Let's find something that fits your mood.</p>
+        </div>
+        <span class="suggestion-sparkle">✦</span>
+    </div>
+
+     <div id="suggestedTask" aria-live="polite">
+        <p>Your suggested task will appear here.</p>
+    </div>
+
+    <button type="button" id="getSuggestionBtn" class="suggestion-button">
+        ✨ Suggest a task
+    </button>
+
+   
+</section>
+</div>
                     </div>
                 </div>
-             
+
                 <!-- Task planner and deadlines -->
                 <div class="planner-layout">
-                    <div class="planner-layout" id="upcomingView" hidden>
 
-
-
-                        <aside class="deadline-panel">
-                            <p class="eyebrow">KEEP AN EYE ON</p>
-                            <h3>Coming up</h3>
-                            <p class="deadline-intro">Your next few deadlines, all in one place.</p>
-
-                            <div id="deadlineList" class="deadline-list" aria-live="polite">
-                                <p class="empty-state">Your upcoming deadlines will appear here.</p>
-                            </div>
-
-                            <div class="deadline-footer">
-                                <span aria-hidden="true">✧</span>
-                                Make time for what matters.
-                            </div>
-                        </aside>
-
-                    </div>
 
             </section>
 
         </main>
     </div>
-    <!-- Task details / edit dialog -->
-<dialog id="taskDetailsDialog" class="task-dialog">
-    <form id="taskDetailsForm">
-        <div class="dialog-heading">
-            <div>
-                <p class="eyebrow">YOUR TASK</p>
-                <h2 id="taskDialogHeading">Task details</h2>
+    <!-- Task details / e
+     dit dialog -->
+
+    <dialog id="taskDetailsDialog" class="task-dialog">
+        <form id="taskDetailsForm">
+
+            <div class="dialog-heading">
+                <div>
+
+                    <h2 id="taskDialogHeading">Task details</h2>
+                </div>
+                <button type="button" id="closeTaskDialog" class="dialog-close" aria-label="Close">×</button>
             </div>
-            <button type="button" id="closeTaskDialog"
-                    class="dialog-close" aria-label="Close">×</button>
-        </div>
 
-        <label for="detailTitle">Title</label>
-        <input id="detailTitle" required>
+            <!-- Task title and deadline -->
+            <section class="detail-hero">
 
-        <div class="dialog-two-columns">
-            <div>
-                <label for="detailCategory">Category</label>
-                <select id="detailCategory">
-                    <option>Work</option>
-                    <option>Study</option>
-                    <option>Personal</option>
-                    <option>Other</option>
-                </select>
+                <input id="detailTitle" class="detail-title-input" placeholder="Give this task a name..." required>
+
+                <div class="detail-deadline">
+                    <span>♡</span>
+                    <label for="detailDeadline">Deadline</label>
+                    <input type="date" id="detailDeadline">
+                </div>
+
+                <div class="detail-priority">
+                    <label for="detailPriority">Priority</label>
+                    <input type="number" id="detailPriority" min="1" step="1" value="1" required>
+
+                </div>
+
+            </section>
+
+            <!-- Notes -->
+            <section class="detail-card notes-card">
+                <div class="detail-card-heading">
+                    <span class="detail-icon">✎</span>
+                    <div>
+                        <h3>Little notes</h3>
+                        <p>Thoughts, reminders, or your plan</p>
+                    </div>
+                </div>
+                <textarea id="detailNotes" rows="3" placeholder="Write anything you want to remember..."></textarea>
+            </section>
+
+            <!-- Subtasks -->
+            <section class="detail-card subtasks-card">
+                <div class="detail-card-heading">
+                    <span class="detail-icon">♡</span>
+                    <div>
+                        <h3>One step at a time</h3>
+                        <p>Break this task into smaller steps</p>
+                    </div>
+                </div>
+
+                <div class="subtask-input-row">
+                    <input type="text" id="detailSubtasks" placeholder="What needs to be done?">
+                    <button type="button" id="addSubtaskButton" class="utility-button">+ Add</button>
+                </div>
+
+                <div id="subtaskList" class="subtask-list"></div>
+            </section>
+
+            <!-- Links -->
+            <section class="detail-card links-card">
+                <div class="detail-card-heading">
+                    <span class="detail-icon">↗</span>
+                    <div>
+                        <h3>Useful little links</h3>
+                        <p>Add one link per line</p>
+                    </div>
+                </div>
+                <textarea id="detailLinks" rows="2" placeholder="https://example.com"></textarea>
+                <div id="taskDetailLinks" class="task-detail-links"></div>
+            </section>
+
+            <!-- Pictures -->
+            <section class="detail-card pictures-card">
+                <div class="detail-card-heading">
+                    <span class="detail-icon">▧</span>
+                    <div>
+                        <h3>Inspiration corner</h3>
+                        <p>Pictures and visual references for this task</p>
+                    </div>
+                </div>
+                <label for="detailImages" class="image-upload-label">
+                    + Add pictures
+                </label>
+                <input type="file" id="detailImages" accept="image/*" multiple hidden>
+                <div id="taskDetailImages" class="task-detail-images"></div>
+            </section>
+
+            <!-- Actions -->
+            <div class="dialog-actions">
+                <button type="button" id="archiveTaskButton">
+    Archive task
+</button>
+                <button type="button" id="cancelTaskDialog" class="utility-button">Close without saving</button>
+                <button type="submit" class="primary-button">
+                    Save changes ♡
+                </button>
             </div>
-            <div>
-                <label for="detailDeadline">Deadline</label>
-                <input type="date" id="detailDeadline">
-            </div>
+
+        </form>
+    </dialog>
+
+
+    <!-- Task completion notification -->
+    <div id="completionToast" class="completion-toast" role="status" aria-live="polite" hidden>
+        <span class="completion-check">✓</span>
+        <div>
+            <strong>Well done!</strong>
+            <p>You have completed your task.</p>
+            <button type="button" id="viewCompletedTask">
+                View details ↗
+            </button>
         </div>
-
-        <label for="detailNotes">Notes</label>
-        <textarea id="detailNotes" rows="3"
-                  placeholder="Add details or a plan..."></textarea>
-
-        <label for="detailSubtasks">Subtasks (one per line)</label>
-        <textarea id="detailSubtasks" rows="3"
-                  placeholder="Read chapter 1&#10;Make summary notes"></textarea>
-
-        <label for="detailLinks">Links (one per line)</label>
-        <textarea id="detailLinks" rows="2"
-                  placeholder="https://example.com"></textarea>
-
-        <label for="detailImages">Pictures for this task</label>
-        <input type="file" id="detailImages" accept="image/*" multiple>
-        <div id="taskDetailImages" class="task-detail-images"></div>
-
-        <div class="dialog-actions">
-            <button type="button" id="cancelTaskDialog"
-                    class="utility-button">Cancel</button>
-            <button type="submit" class="primary-button">Save task</button>
-        </div>
-    </form>
-</dialog>
-
-<!-- Task completion notification -->
-<div id="completionToast" class="completion-toast"
-     role="status" aria-live="polite" hidden>
-    <span class="completion-check">✓</span>
-    <div>
-        <strong>Well done!</strong>
-        <p>You have completed your task.</p>
-        <button type="button" id="viewCompletedTask">
-            View details ↗
-        </button>
+        <button type="button" id="closeCompletionToast" aria-label="Close notification">×</button>
     </div>
-    <button type="button" id="closeCompletionToast"
-            aria-label="Close notification">×</button>
-</div>
+
+    <!-- Priority reminder notification -->
+    <div id="priorityToast" class="priority-toast" role="status" aria-live="polite">
+        1 is the highest priority.
+    </div>
+
 </body>
 
 </html>

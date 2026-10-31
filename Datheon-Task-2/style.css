@@ -3702,3 +3702,98 @@ body[data-theme="dark"] .primary-button {
     color: #888;
     font-size: 0.9rem;
 }
+#detailCategory {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e4cccc;
+    border-radius: 8px;
+    background: #fff9ee;
+    color: #542F35;
+    font: inherit;
+}
+#taskDetailsDialog #taskDetailsForm .detail-category {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    margin: 8px auto 0;
+}
+
+#taskDetailsDialog #taskDetailsForm #detailCategory {
+    width: 130px;
+    padding: 9px 10px;
+    border: 1px solid #ead5d5;
+    border-radius: 12px;
+    background: #fff4f1;
+    color: #542F35;
+}
+/* Keep Category beside Deadline and Priority */
+#taskDetailsDialog #taskDetailsForm .detail-category {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    width: fit-content;
+    max-width: 100%;
+    margin: 8px 0 0 !important;
+    padding: 9px 12px;
+    box-sizing: border-box;
+
+    background: #fff4f1;
+    border: 1px solid #ead5d5;
+    border-radius: 12px;
+}
+
+#taskDetailsDialog #taskDetailsForm #detailCategory {
+    width: 130px;
+    padding: 5px;
+    border: none;
+    background: transparent;
+    color: #542F35;
+}
+/* Three fields in one row */
+#taskDetailsDialog #taskDetailsForm .detail-fields-row {
+    display: grid;
+    grid-template-columns: 1.4fr 0.25fr 1fr;
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+}
+
+#taskDetailsDialog #taskDetailsForm .detail-fields-row > * {
+    min-width: 0;
+    width: 100%;
+    margin: 0 !important;
+    box-sizing: border-box;
+}
+
+#taskDetailsDialog #taskDetailsForm .detail-category {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 8px;
+    background: #fff4f1;
+    border: 1px solid #ead5d5;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+#taskDetailsDialog #taskDetailsForm #detailCategory {
+    width: 100%;
+    min-width: 0;
+    padding: 5px 2px;
+    border: none;
+    background: transparent;
+    color: #542F35;
+    font: inherit;
+}
+#taskDetailsDialog #taskDetailsForm .detail-fields-row .detail-priority {
+    width: 100%;
+    min-width: 0;
+    margin: 0 !important;
+}
+
+#taskDetailsDialog #taskDetailsForm #detailPriority {
+    width: 55px !important;
+    max-width: 55px;
+    box-sizing: border-box;
+}

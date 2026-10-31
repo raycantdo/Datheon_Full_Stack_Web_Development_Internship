@@ -700,7 +700,8 @@ function openTaskDetails(task) {
 
     document.getElementById("taskDialogHeading").textContent = "Task details";
     document.getElementById("detailTitle").value = task.title || "";
-   
+   document.getElementById("detailCategory").value =
+    task.category || "Study";
     document.getElementById("detailDeadline").value = task.dueDate || "";
      document.getElementById("detailNotes").value = task.notes || "";
    document.getElementById("detailPriority").value = task.priority || 1;
@@ -950,6 +951,8 @@ document.getElementById("taskDetailsForm")?.addEventListener("submit", event => 
     if (!task) return;
 
     task.title = title;
+    task.category =
+    document.getElementById("detailCategory").value;
     task.dueDate = document.getElementById("detailDeadline").value;
     const priorityInput = document.getElementById("detailPriority");
 
